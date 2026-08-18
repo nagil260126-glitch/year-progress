@@ -13,7 +13,7 @@
   }
   #barWrap {
     width: 100%;
-    padding: 24px 0 8px;
+    padding: 24px 32px 8px;
     box-sizing: border-box;
   }
 </style>
@@ -22,7 +22,6 @@
 <div id="barWrap"></div>
 <script>
 (function(){
-  // 다크모드 여부는 시스템 설정을 따름 (노션 페이지 테마와 자동 매칭은 안 되므로 라이트 기준 고정 색상 사용)
   const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
   const trackColor = isDark ? '#2c2c2a' : '#e1e0d9';
   const fillColor = isDark ? '#5DCAA5' : '#0F6E56';
@@ -46,7 +45,7 @@
     { day: dayOfYear(3,1), label: '4월 1일' },
     { day: dayOfYear(6,1), label: '7월 1일' },
     { day: dayOfYear(9,1), label: '10월 1일' },
-    { day: dayOfYear(11, isLeap ? 31 : 31), label: '12월 31일' }
+    { day: dayOfYear(11,31), label: '12월 31일' }
   ];
 
   const todayLabel = (now.getMonth() + 1) + '월 ' + now.getDate() + '일';
@@ -61,10 +60,11 @@
   const fillW = todayX - padX;
 
   let ticksSvg = '';
-  milestones.forEach(m => {
+  milestones.forEach((m, i) => {
     const x = xForDay(m.day);
+    const anchor = i === 0 ? 'start' : (i === milestones.length - 1 ? 'end' : 'middle');
     ticksSvg += '<line x1="' + x + '" y1="' + (barY - 4) + '" x2="' + x + '" y2="' + (barY + barH + 4) + '" stroke="' + tickColor + '" stroke-width="1"/>';
-    ticksSvg += '<text x="' + x + '" y="' + (barY + barH + 20) + '" text-anchor="middle" font-size="12" fill="' + tickColor + '">' + m.label + '</text>';
+    ticksSvg += '<text x="' + x + '" y="' + (barY + barH + 20) + '" text-anchor="' + anchor + '" font-size="12" fill="' + tickColor + '">' + m.label + '</text>';
   });
 
   const svg = '<svg viewBox="0 0 ' + W + ' 110" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; overflow:visible;">' +
